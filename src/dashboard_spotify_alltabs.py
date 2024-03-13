@@ -414,7 +414,7 @@ tab2_content = dbc.Container([
         dbc.Col([
             # Genre Selection Card
             dbc.Card([
-                dbc.CardHeader("Genre Selection", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                dbc.CardHeader("Step1: Select Genre", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dbc.CardBody([
                     dcc.Dropdown(
                         id='genre-dropdown',
@@ -427,7 +427,7 @@ tab2_content = dbc.Container([
 
             # Music Features Card
             dbc.Card([
-                dbc.CardHeader("Music Features", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                dbc.CardHeader("Step2: Change Music Feature Ranges", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dbc.CardBody([
                     html.Div([
                         html.Div([
@@ -462,14 +462,14 @@ tab2_content = dbc.Container([
         dbc.Col([
             # Selected Features and Trends Card
             dbc.Card([
-                dbc.CardHeader("Selected Features and Trends", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                dbc.CardHeader("Step3: Observe Selected Music Feature Distribution", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dbc.CardBody([
                     dcc.Graph(id='parallel-coordinates-plot'),
                 ])
             ], style={'marginBottom': '20px'}),
             #Songs tables
             dbc.Card([
-                dbc.CardHeader("Top 10 Songs", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                dbc.CardHeader("Step4: Popular Songs Based On Your Selections", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dbc.CardBody([
                     dash_table.DataTable(
                         id='songs-table',
