@@ -18,9 +18,16 @@ from sklearn.preprocessing import MinMaxScaler
 import os
 import pycountry
 
+import requests
+from bs4 import BeautifulSoup
+import urllib.request
+import time
+
 
 # Create Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Music Explorer with Spotify")
+server = app.server
+
 
 # # Tabs
 
@@ -28,32 +35,32 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Data Preprocessing Tab1
 # load data
-df_tracks = pd.read_csv('./data/preprocessed/df_tracks_remove_dup.csv')
+df_tracks = pd.read_csv('./data/preprocessed/df_tracks_interestgenre.csv')
 
 # load data
-f = open('./data/preprocessed/track_genre.json',)
+f = open('./data/preprocessed/track_genre.json',) 
 list_track_genre = json.load(f) ['track_genre']
-f.close()
-f = open('./data/preprocessed/track_name.json',)
+f.close() 
+f = open('./data/preprocessed/track_name.json',) 
 list_track_name = json.load(f) ['track_name']
-f.close()
-f = open('./data/preprocessed/artist.json',)
+f.close()  
+f = open('./data/preprocessed/artist.json',) 
 list_artists = json.load(f) ['artists']
-f.close()
+f.close() 
 
 # print(len(list_artists), len(list_track_name), len(list_track_genre))
 
 # value for slicer
-f = open('./data/preprocessed/dict_cols_val.json',)
+f = open('./data/preprocessed/dict_cols_val.json',) 
 dict_cols_val = json.load(f)
-f.close()
+f.close() 
 
 # print(len(dict_cols_val))
 
-# # comment for production
+# # comment for production 
 # # uncomment for making the faster dashboard
-list_artists = list_artists[:20]
-list_track_name = list_track_name[:5]
+# list_artists = list_artists[:20]
+# list_track_name = list_track_name[:5]
 
 def filter_taste(slct_genre, slct_track, slct_artist):
     df_filt = df_tracks.copy()
@@ -79,7 +86,7 @@ def filter_taste(slct_genre, slct_track, slct_artist):
     elif (len(slct_genre)==0)&(len(slct_track)>0)&(len(slct_artist)>0):
         cond_track = df_tracks['track_name'].isin(slct_track)
         cond_artist = df_tracks['artists'].isin(slct_artist)
-        df_filt = df_tracks[cond_track|cond_artist]
+        df_filt = df_tracks[cond_track|cond_artist] 
     ## filter only artist
     elif (len(slct_genre)==0)&(len(slct_genre)==0)&(len(slct_artist)>0):
         df_filt = df_tracks[df_tracks['artists'].isin(slct_artist)]
@@ -88,20 +95,22 @@ def filter_taste(slct_genre, slct_track, slct_artist):
         cond_genre = df_tracks['track_genre'].isin(slct_genre)
         cond_artist = df_tracks['artists'].isin(slct_artist)
         df_filt = df_tracks[cond_genre|cond_artist]
-
+    
     return df_filt
 
 # Specify the columns for the radar chart
-list_cols_radar = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness',
+list_cols_radar = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 
            'instrumentalness', 'liveness', 'valence', 'tempo']
 # default genre for showing radar chart
-selected_genres_default = ['tango', 'acoustic', 'black-metal', 'j-idol', 'anime',
-                     'idm', 'comedy', 'pop', 'blues', 'disco', 'k-pop', 'romance', 'death-metal']
+selected_genres_default = ['pop', 'hip-hop', 'rock-n-roll',  
+                             'rock', 'edm', 'r-n-b', 'country',
+                             'latin', 'indie', 'k-pop', 'metal',
+                             'classical', 'jazz', 'blues', 'folk', 'reggae', 'soul']
 
 
 # list for stats table
-list_stats_dsp = ['popularity', 'danceability', 'energy',
-                 'loudness', 'speechiness', 'acousticness',
+list_stats_dsp = ['popularity', 'danceability', 'energy', 
+                 'loudness', 'speechiness', 'acousticness', 
                  'instrumentalness', 'liveness', 'tempo']
 df_table = df_tracks[list_stats_dsp].describe().T[['min', 'mean', 'max']].reset_index()
 df_table.columns = ['Statistics', 'Min', 'Mean', 'Max']
@@ -119,7 +128,7 @@ tab1_content = html.Div([
                 dbc.Row([
                     dbc.Col([
                         dbc.Card([
-                            dbc.CardHeader("Filter",
+                            dbc.CardHeader("Filter", 
                                            style={'backgroundColor': '#68A58C',
                                                   'fontWeight': 'bold', 'color': 'white',
                                                   'font-size': '18px'}),
@@ -139,8 +148,8 @@ tab1_content = html.Div([
                                                             multi=True,
                                                             optionHeight=110,
                                                             placeholder="Select an Track Name",
-                                                            style={'width': '6',
-                                                                   'min-height': '28vh'}
+                                                            style={'width': '6',  
+                                                                   'min-height': '28vh'}   
                                                 )
                                             ], width=6),
 
@@ -154,9 +163,9 @@ tab1_content = html.Div([
                                                             multi=True,
                                                             optionHeight=110,
                                                             placeholder="Select an Artist",
-                                                            style={'width': '6',
-                                                                   'min-height': '28vh'}
-                                                )
+                                                            style={'width': '6',  
+                                                                   'min-height': '28vh'} 
+                                                ) 
                                             ], width=6),
 
 
@@ -173,13 +182,13 @@ tab1_content = html.Div([
                                                                 value=[],
                                                                 multi=True,
                                                                 placeholder="Select an Genre",
-                                                                style={'width': '12',
+                                                                style={'width': '12',  
                                                                        'min-height': '20vh',
                                                                        'margin-left': '3px',
-                                                                       'margin-bottom': '3px'}
+                                                                       'margin-bottom': '3px'} 
                                                     ),
                                                 html.Div(id='hidden-data', style={'display': 'none'})
-                                            ], width=12)
+                                            ], width=12)      
 
                                         ]),
                                     ], width=12)
@@ -188,7 +197,7 @@ tab1_content = html.Div([
                         ], color='light'),
                     ], width=12)
                 ]),
-
+                    
                 # Row 2 : Logo
                 dbc.Row([
                     html.Br(),
@@ -200,7 +209,7 @@ tab1_content = html.Div([
 
             ], width=4),
 
-
+        
         # Col2 : Charts
         dbc.Col([
             # Row1: Table and Pie Charts
@@ -208,39 +217,39 @@ tab1_content = html.Div([
                 # Col1: Table of song
                 dbc.Col([
                     dbc.Card([
-                        dbc.CardHeader("Your Music Taste",
+                        dbc.CardHeader("Your Music Taste", 
                                            style={'backgroundColor': '#68A58C',
                                                   'fontWeight': 'bold', 'color': 'white',
-                                                  'font-size': '18px'}),
+                                                  'font-size': '18px'}),          
                         dbc.CardBody([
                             dash_table.DataTable(
                                              id='stats-table',
                                              columns=[{'name': col, 'id': col} for col in df_table.columns],
                                              data=df_table.to_dict('records'),
-                                             style_table={'width': '6', 'height': '330px',
+                                             style_table={'width': '6', 'height': '330px', 
 #                                                           'marginTop': '15px',
                                                           'overflowX': 'auto'},
                                              style_cell={'font_size': '14px', 'whiteSpace': 'normal',
                                                          'word-wrap': 'break-word',
-                                                        'textAlign': 'center', 'minWidth': '60px',
-                                                         'maxWidth': '60px',
+                                                        'textAlign': 'center', 'minWidth': '60px', 
+                                                         'maxWidth': '60px', 
                                                         'backgroundColor': 'transparent'}  ,
                                              style_data={'border': '0px'},
-                                             style_header={'border': '0px', 'fontWeight': 'bold',
+                                             style_header={'border': '0px', 'fontWeight': 'bold', 
                                                            'font-size': '18px'},
                                              style_data_conditional=[
-                                                        {'if': {'column_id': 'Statistics'},
-                                                         'textAlign': 'center', 'minWidth': '140px',
-                                                         'maxWidth': '140px' }]
+                                                        {'if': {'column_id': 'Statistics'}, 
+                                                         'textAlign': 'center', 'minWidth': '140px', 
+                                                         'maxWidth': '140px' }]                  
                             )
                         ], style={'height': '330px'})
                     ], color='light')
                 ], width=6),
-
+                
                 # Col2: Pie Chart
                 dbc.Col([
                     dbc.Card([
-                        dbc.CardHeader("Genre Proportion",
+                        dbc.CardHeader("Genre Proportion", 
                                            style={'backgroundColor': '#68A58C',
                                                   'fontWeight': 'bold', 'color': 'white',
                                                   'font-size': '18px'}),
@@ -253,13 +262,13 @@ tab1_content = html.Div([
                     ], color="light")
                 ], width=6)
             ], className="gx-3"),
-
+            
             # Row2: Radar Charts
             dbc.Row([
                #Col1: Radar Chart
                 dbc.Col([
                     dbc.Card([
-                        dbc.CardHeader("Music Taste Status",
+                        dbc.CardHeader("Music Taste Status", 
                                            style={'backgroundColor': '#68A58C',
                                                   'fontWeight': 'bold', 'color': 'white',
                                                   'font-size': '18px'}),
@@ -268,9 +277,9 @@ tab1_content = html.Div([
                         ])
                     ], color="light", style={'margin-top': '16px'})
                 ], width=12)
-            ]),
+            ]),        
         ], width=8)
-    ], className="gx-3")
+    ], className="gx-3")   
 ])
 
 @app.callback(
@@ -280,16 +289,16 @@ tab1_content = html.Div([
     Input('trackname-filter', 'value'),
     Input('artist-filter', 'value'))
 def filter_genre(slct_genre, slct_track, slct_artist):
-
+    
     df_filt = filter_taste(slct_genre, slct_track, slct_artist)
-
+    
     # stats table
     df_table = df_filt[list_stats_dsp].describe().T[['min', 'mean', 'max']].reset_index()
     df_table.columns = ['Statistics', 'Min', 'Mean', 'Max']
     df_table['Statistics'] = df_table['Statistics'].str.capitalize()
     df_table = df_table.sort_values('Statistics')
     df_table = df_table.round(2)
-
+    
     # genre pie chart
     df_pie = pd.concat([df_filt['track_genre'].value_counts(normalize=True),
                    df_filt['track_genre'].value_counts()], axis=1)
@@ -301,23 +310,23 @@ def filter_genre(slct_genre, slct_track, slct_artist):
         df_pie.loc[9:, "Genre"] = 'Others'
         df_pie = df_pie.groupby(["Genre"]).sum().reset_index()
 #     df_pie = df_pie.round(2)
-
+       
     chart_pie = alt.Chart(df_pie).mark_arc(innerRadius=0).encode(
                         theta=alt.Theta(field="Percentage", type="quantitative"),
                         color=alt.Color(field="Genre", type="nominal"),
-                        tooltip=[alt.Tooltip("Genre:N"),
-                                 alt.Tooltip("Percentage:Q", format='.2%'),
+                        tooltip=[alt.Tooltip("Genre:N"), 
+                                 alt.Tooltip("Percentage:Q", format='.2%'), 
                                  alt.Tooltip("Count:Q", format=',')]
                 )
 
     text = chart_pie.mark_text(radius=135, size=12, align="center").encode(
                 text=alt.Text("Percentage:Q",format=".1%",),
             )
-
-
-    chart_pie_t = (chart_pie + text).properties(width=230, height=270,
+    
+    
+    chart_pie_t = (chart_pie + text).properties(width=230, height=270, 
                                                 background='transparent').configure_view(strokeWidth=0)
-
+    
     return df_table.to_dict('records'), chart_pie_t.to_html()
 
 
@@ -329,9 +338,9 @@ def filter_genre(slct_genre, slct_track, slct_artist):
      dash.dependencies.Input('artist-filter', 'value')
 )
 def update_radar_chart(slct_genre, slct_track, slct_artist):
-
+    
     df_filt = filter_taste(slct_genre, slct_track, slct_artist)
-
+        
     # Group by genre and calculate the mean of each metric
     mean_metrics_by_genre = df_filt.groupby('track_genre')[list_cols_radar].mean()
 
@@ -381,7 +390,10 @@ df['artists'] = df['artists'].str.split(';').str[0]
 # Helper functions
 def generate_marks(feature_min, feature_max):
     step = max((feature_max - feature_min) / 5, 1) 
-    return {i: f"{i:.2f}" for i in range(int(feature_min), int(feature_max) + 1, int(step))}
+    if feature_max<=1:
+        return {feature_min: f"{feature_min:.2f}", feature_max: f"{feature_max:.2f}"}
+    else:
+        return {i: f"{i:.2f}" for i in range(int(feature_min), int(feature_max) + 1, int(step))}
 
 def normalize(df, features):
     result = df.copy()
@@ -610,24 +622,27 @@ tab3_content = dbc.Container([
                 dbc.CardHeader("Step2: Select a Country to View the Top 10 Songs Below", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),  # Light green background, bold, and centered text
                 dcc.Graph(
                     id='choropleth-map',
-                    style={'height': '64vh'}  # Adjusted height
+                    style={'height': '58vh'}  # Adjusted height
                 )
             ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px', 'margin-top': '16px'})
         ], width=6),
         
         dbc.Col([
             dbc.Card([
+                dbc.CardHeader("Top 10 Most Frequently Ranked Songs by Popularity (Globally)", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dcc.Graph(
                     id='top-songs-bar-chart',
                     config={'displayModeBar': False}, # Hide the mode bar
-                    style={'height': '40vh'}  # Adjusted height
+                    style={'height': '35vh'}  # Adjusted height
                 ),
-                dcc.Graph(
-                    id='top-artists-bar-chart',
-                    config={'displayModeBar': False}, # Hide the mode bar
-                    style={'height': '40vh'}  # Adjusted height
-                )
-            ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px'})
+            ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px'}
+            ),
+            dbc.Card([
+                dbc.CardHeader("Top 3 Most Frequently Ranked Artist by Popularity (Globally)", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                html.Div(id='image-container', style={'height': '27vh', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'})
+                
+            ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px', 'margin-top': '16px'}
+            )
         ], width=6),
     ]),
     
@@ -724,7 +739,7 @@ def update_top_songs_bar_chart(selected_range):
         hovertext=hover_text,
         hoverinfo='text',
     )])
-    fig.update_layout(title='Top 10 Most Frequently Ranked Songs by Popularity (Globally)', 
+    fig.update_layout(#title='Top 10 Most Frequently Ranked Songs by Popularity (Globally)', 
                       yaxis={'categoryorder': 'total ascending'},
                       xaxis={'side': 'top'}, # Move x-axis markings to the top
                       font=dict(size=10))
@@ -733,10 +748,10 @@ def update_top_songs_bar_chart(selected_range):
 
 # Add callback to update top artists bar chart based on slider value
 @app.callback(
-    Output('top-artists-bar-chart', 'figure'),
+    Output('image-container', 'children'),
     [Input('color-scale-slider', 'value')]
 )
-def update_top_artists_bar_chart(selected_range):
+def update_top_artists_img(selected_range):
     # Extracting min and max values from the selected range
     min_value, max_value = selected_range
 
@@ -744,21 +759,43 @@ def update_top_artists_bar_chart(selected_range):
     filtered_data = spotify_data_countries_copy[(spotify_data_countries_copy['popularity'] >= min_value) & 
                                                 (spotify_data_countries_copy['popularity'] <= max_value)]
     
+
     # Count the occurrences of each artist
-    top_artist_counts = filtered_data['artists'].value_counts().head(10)
+    list_top_artists = filtered_data['artists'].value_counts().head(3).index.tolist()
     
-    # Create a horizontal bar chart
-    fig = go.Figure(data=[go.Bar(
-        y=top_artist_counts.index,
-        x=top_artist_counts.values,
-        orientation='h', # Set orientation to horizontal
-    )])
-    fig.update_layout(title='Top 10 Most Frequently Ranked Artists by Popularity (Globally)', 
-                      yaxis={'categoryorder': 'total ascending'},
-                      xaxis={'side': 'top'}, # Move x-axis markings to the top
-                      font=dict(size=10))
-        
-    return fig
+#     list_top_artists = ['Taylor Swift',  'Justin Bieber', 'Ed Sheeran']  # top 3
+
+    list_links_picts = []
+    image_components = []
+    for i, search_artist in enumerate(list_top_artists):
+        # define website (Bing is easy for scraping)
+        # url_search = f'https://www.bing.com/images/search?q={search_query}'
+        url_search = f'https://www.bing.com/images/search?cw=1853&ch=933&q={search_artist}&qft=%2bfilterui%3aface-portrait&first=1'
+        url_search
+
+        # call html
+        headers = {
+                'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+            }
+
+        response = requests.get(url_search, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        time.sleep(1.5)  # wait 1 second for data showing up; I have tried 0.75. It cannot load the image.
+
+        # get image link
+        link_image = soup.find_all('img', {"class":"mimg"})[0].get('src')
+
+        image_components.append(
+            html.Div([  # Create a container div for image and name
+                html.Img(src=link_image, style={'height': '180px', 'width': '170px', 'margin': '5px'}),
+                html.P(search_artist)  # Add a paragraph for the artist's name
+            ], style={'display': 'inline-block', 'margin': '5px', 'text-align': 'center'})  # Style for spacing
+        )
+    
+    
+    return image_components
+
 
 # Define callback to update selected country display
 @app.callback(
@@ -800,8 +837,10 @@ def update_song_list(clickData, selected_range):
         top_songs_top10 = top_songs_unique.nlargest(10, 'popularity')
 
         # Additional columns to include with each first letter capitalized in the header
-        columns = ['popularity', 'danceability', 'energy', 'loudness', 'speechiness',
-                'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
+        columns = ['popularity', 
+#                    'danceability', 'energy', 'loudness', 'speechiness',
+#                 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo'
+                  ]
 
         # Create DataTable component for displaying top 10 songs with additional columns
         data_table = dash_table.DataTable(
@@ -831,7 +870,5 @@ app.layout = dbc.Container([
     ])
 ])
 
-
-
 if __name__ == '__main__':
-    app.run_server(debug=True, host = '127.0.0.1')
+    app.run_server(debug=False)
