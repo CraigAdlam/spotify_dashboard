@@ -376,12 +376,11 @@ def update_radar_chart(slct_genre, slct_track, slct_artist):
 
 # ## Tab 2
 
-# Assuming df_tracks and other necessary imports and setup have been done above
 df = df_tracks.copy()
 df['artists'] = df['artists'].str.split(';').str[0]
 # Helper functions
 def generate_marks(feature_min, feature_max):
-    step = max((feature_max - feature_min) / 5, 1)  # Ensure step is at least 1
+    step = max((feature_max - feature_min) / 5, 1) 
     return {i: f"{i:.2f}" for i in range(int(feature_min), int(feature_max) + 1, int(step))}
 
 def normalize(df, features):
@@ -419,7 +418,8 @@ tab2_content = dbc.Container([
                     dcc.Dropdown(
                         id='genre-dropdown',
                         options=[{'label': genre, 'value': genre} for genre in df['track_genre'].unique()],
-                        value=[df['track_genre'].unique()[0]],
+                        #value=[df['track_genre'].unique()[1]],
+                        value=['pop','k-pop'],
                         multi=True
                     ),
                 ])
