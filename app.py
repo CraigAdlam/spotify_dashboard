@@ -638,7 +638,7 @@ tab3_content = dbc.Container([
             ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px'}
             ),
             dbc.Card([
-                dbc.CardHeader("Top 3 Most Frequently Ranked Artist by Popularity (Globally)", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                dbc.CardHeader("Top 3 Most Frequently Ranked Artists by Popularity (Globally)", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 html.Div(id='image-container', style={'height': '27vh', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'})
                 
             ], color="light", style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px', 'margin-top': '16px'}
@@ -770,7 +770,7 @@ def update_top_artists_img(selected_range):
     for i, search_artist in enumerate(list_top_artists):
         # define website (Bing is easy for scraping)
         # url_search = f'https://www.bing.com/images/search?q={search_query}'
-        url_search = f'https://www.bing.com/images/search?cw=1853&ch=933&q={search_artist}&qft=%2bfilterui%3aface-portrait&first=1'
+        url_search = f'https://www.bing.com/images/search?cw=1853&ch=933&q=spotify+{search_artist}&qft=%2bfilterui%3aface-portrait&first=1'
         url_search
 
         # call html
