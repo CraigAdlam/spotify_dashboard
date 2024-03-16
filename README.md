@@ -7,7 +7,9 @@
 
 ## Overview
 
-Discover Your Music Taste Dashboard uses Spotify data to provide an interactive and insightful exploration of your music preferences. Designed to help users uncover new tracks and understand their listening habits, the dashboard features advanced data visualizations and customizable filters.
+Discover Your Music Taste Dashboard uses Spotify data to provide an interactive and insightful exploration of your music preferences. Designed to help users uncover new tracks and understand their listening habits, the dashboard features advanced data visualizations and customizable filters.  
+
+[Go to Music Explorer with Spotify Dashboard](https://spotify-dashboard-xnjm.onrender.com/)  
 
 ## Getting Started
 
