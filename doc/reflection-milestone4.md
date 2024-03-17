@@ -1,4 +1,4 @@
-## Spotify Dashboard - Reflection: Milestone4
+## Spotify Dashboard - Reflection
 
 In this section, your group should document on what you have implemented in your dashboard so far and explain what is not yet implemented. It is important that you include what you know is not working in your dashboard, so that your TAs can distinguish between features in development and bugs. Since this is the last milestone, you really need to motivate well why you have not chosen to include some feature that you were planning on including previously.
 
