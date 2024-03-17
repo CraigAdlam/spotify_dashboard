@@ -14,6 +14,7 @@ import numpy as np
 import json
 
 import plotly.graph_objects as go
+import plotly.express as px
 from sklearn.preprocessing import MinMaxScaler
 import os
 import pycountry
@@ -254,10 +255,15 @@ tab1_content = html.Div([
                                                   'fontWeight': 'bold', 'color': 'white',
                                                   'font-size': '18px'}),
                         dbc.CardBody([
-                            html.Iframe(
-                                        id='pie-chart',
-                                        style={'border-width': '0', 'width': '100%', 'height': '330px'}
-                            )
+#                             html.Iframe(
+#                                         id='pie-chart',
+#                                         style={'border-width': '0', 'width': '100%', 'height': '330px'}
+#                             )
+                            dcc.Graph(
+                                id='pie-chart',
+#                                 config={'displayModeBar': False}, # Hide the mode bar
+                                style={'height': '100%', 'border-width': '0'}
+                            ),
                         ], style={'height': '330px'})
                     ], color="light")
                 ], width=6)
@@ -284,7 +290,8 @@ tab1_content = html.Div([
 
 @app.callback(
     Output('stats-table', 'data'),  # Statistics table
-    Output('pie-chart', 'srcDoc'),  # Genre Pie Chart
+#     Output('pie-chart', 'srcDoc'),  # Genre Pie Chart
+    Output('pie-chart', 'figure'),  # Genre Pie Chart
     Input('genre-filter', 'value'),
     Input('trackname-filter', 'value'),
     Input('artist-filter', 'value'))
@@ -311,23 +318,38 @@ def filter_genre(slct_genre, slct_track, slct_artist):
         df_pie = df_pie.groupby(["Genre"]).sum().reset_index()
 #     df_pie = df_pie.round(2)
        
-    chart_pie = alt.Chart(df_pie).mark_arc(innerRadius=0).encode(
-                        theta=alt.Theta(field="Percentage", type="quantitative"),
-                        color=alt.Color(field="Genre", type="nominal"),
-                        tooltip=[alt.Tooltip("Genre:N"), 
-                                 alt.Tooltip("Percentage:Q", format='.2%'), 
-                                 alt.Tooltip("Count:Q", format=',')]
-                )
+#     chart_pie = alt.Chart(df_pie).mark_arc(innerRadius=0).encode(
+#                         theta=alt.Theta(field="Percentage", type="quantitative"),
+#                         color=alt.Color(field="Genre", type="nominal"),
+#                         tooltip=[alt.Tooltip("Genre:N"), 
+#                                  alt.Tooltip("Percentage:Q", format='.2%'), 
+#                                  alt.Tooltip("Count:Q", format=',')]
+#                 )
 
-    text = chart_pie.mark_text(radius=135, size=12, align="center").encode(
-                text=alt.Text("Percentage:Q",format=".1%",),
-            )
+#     text = chart_pie.mark_text(radius=135, size=12, align="center").encode(
+#                 text=alt.Text("Percentage:Q",format=".1%",),
+#             )
     
     
-    chart_pie_t = (chart_pie + text).properties(width=230, height=270, 
-                                                background='transparent').configure_view(strokeWidth=0)
+#     chart_pie_t = (chart_pie + text).properties(width=230, height=270, 
+#                                                 background='transparent').configure_view(strokeWidth=0)
     
-    return df_table.to_dict('records'), chart_pie_t.to_html()
+#     return df_table.to_dict('records'), chart_pie_t.to_html()
+
+    
+#     Create a pie chart
+    fig = go.Figure(data=[go.Pie(
+        labels=df_pie['Genre'],
+        values=df_pie['Percentage'],
+    )])
+    fig.update_traces(textposition='inside', hoverinfo="label+percent")
+    fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide', 
+                      margin=dict(t=0, b=0, l=0, r=0),
+                      paper_bgcolor='rgba(0,0,0,0)')
+        
+    return df_table.to_dict('records'), fig
+
+
 
 
 # Radar chart with plotly
