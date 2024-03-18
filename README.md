@@ -33,7 +33,7 @@ This tab is dedicated to finding new music based on your listening preferences a
 - **Feature Sliders**: Customize your search with sliders for various musical attributes.
 - **Genre Dropdown**: Filter songs by genre to discover music that aligns with your tastes.
 - **Music Visualizations**: Use parallel coordinates plots to understand the musical features of your favorite tracks.
-- **Ranked Song Suggestion**: Get ranked song suggestions based on the genre and music features selected.
+- **Ranked Song Suggestion**: Get ranked song suggestions and Spotify link based on the genre and music features selected.
 
 ### Tab 3: Explore the World
 
