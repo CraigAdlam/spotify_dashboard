@@ -410,19 +410,48 @@ df = df_tracks.copy()
 df['artists'] = df['artists'].str.split(';').str[0]
 # Helper functions
 def generate_marks(feature_min, feature_max):
+    """
+    Creates marks for sliders based on a feature range.
+    
+    Generates marks at intervals over the range [feature_min, feature_max]. If feature_max <= 1,
+    marks are only at feature_min and feature_max. Otherwise, marks are spaced based on a calculated step,
+    ensuring a minimum step of 1, and formatted to two decimal places.
+    
+    Parameters:
+    - feature_min (float): Minimum value of the feature.
+    - feature_max (float): Maximum value of the feature.
+    
+    Returns:
+    - dict: Marks with keys as positions and values as formatted strings.
+    """
     step = max((feature_max - feature_min) / 5, 1) 
-    if feature_max<=1:
+    if feature_max <= 1:
         return {feature_min: f"{feature_min:.2f}", feature_max: f"{feature_max:.2f}"}
     else:
         return {i: f"{i:.2f}" for i in range(int(feature_min), int(feature_max) + 1, int(step))}
 
 def normalize(df, features):
+    """
+    Normalizes specified DataFrame columns to [0, 1].
+    
+    Scales the values of each column in `features` from a DataFrame `df` to a range [0, 1], where
+    the minimum and maximum values of the column correspond to 0 and 1, respectively. Returns the
+    DataFrame with normalized columns.
+    
+    Parameters:
+    - df (pandas.DataFrame): The DataFrame to normalize.
+    - features (list of str): Column names to normalize.
+    
+    Returns:
+    - pandas.DataFrame: DataFrame with normalized columns.
+    """
     result = df.copy()
     for feature_name in features:
         max_value = df[feature_name].max()
         min_value = df[feature_name].min()
         result[feature_name] = (df[feature_name] - min_value) / (max_value - min_value)
     return result
+
 
 # Tooltips for each slider
 feature_tooltips = {
