@@ -3,7 +3,7 @@
 ### Usability
 
 - Based on the feedback received, the dashboard is very easy to use and navigate from tab to tab
-- Some users overlooked some features and requested more clarity, guided steps were added in the headers to clarify what can be done
+- Some users overlooked some features and requested more direction, guided steps were added in the headers to clarify
 
 ### Reoccurring Themes
 
@@ -22,7 +22,7 @@
 #### **What has been done:**
 
 ##### Improvements from Milestone 2
-- Remove data/make the dataset callable when needed (stored variable)
+- Remove data/make the dataset callable when needed
 - Make search area smaller/equal to the chart area beside
 - Use Card element header instead of paragraph
 
@@ -33,7 +33,7 @@
 
 
 
-### Tab 2 – Find New One?
+### Tab 2 – Find New Music
 
 #### **What has been done:**
 
@@ -44,6 +44,7 @@
 
 ##### Improvements from Milestone 3
 - ADDED scrollable table to optimize available space and allow the user to view more songs based on their selection
+- ADDED hover "info" text to include a definition of the music metric term
 - REFORMATTED colours, headers with steps to guide the user, positioning/layout/sizing of the chart/table areas
 
 
@@ -60,7 +61,7 @@
 ##### Improvements from Milestone 2
 - Change background colors/Card colors to match the Spotify green theme
 - Add second index to slider so a range of popularity can be selected
-- Limit table to song, artist, and popularity
+- Limit table columns to song, artist, and popularity
 
 ##### Improvements from Milestone 3
 - CHANGED bar charts that display the top 10 songs and artist to SINGLE PIE CHART AND PICTURES OF TOP 3 ARTISTS
