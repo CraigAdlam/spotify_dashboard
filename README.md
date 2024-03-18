@@ -32,7 +32,8 @@ This tab is dedicated to finding new music based on your listening preferences a
 
 - **Feature Sliders**: Customize your search with sliders for various musical attributes.
 - **Genre Dropdown**: Filter songs by genre to discover music that aligns with your tastes.
-- **Music Visualizations**: Utilize bar charts and parallel coordinates plots to understand the musical features of your favorite tracks.
+- **Music Visualizations**: Use parallel coordinates plots to understand the musical features of your favorite tracks.
+- **Ranked Song Suggestion**: Get ranked song suggestions based on the genre and music features selected.
 
 ### Tab 3: Explore the World
 
