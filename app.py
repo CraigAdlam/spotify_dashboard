@@ -59,8 +59,8 @@ f.close()
 
 # # comment for production 
 # # uncomment for making the faster dashboard
-list_artists = list_artists[:20]
-list_track_name = list_track_name[:5]
+# list_artists = list_artists[:20]
+# list_track_name = list_track_name[:5]
 
 def filter_taste(slct_genre, slct_track, slct_artist):
     df_filt = df_tracks.copy()
@@ -130,7 +130,7 @@ tab1_content = html.Div([
                         dbc.Card([
                             dbc.CardHeader("Filter", 
                                            style={'backgroundColor': '#68A58C',
-                                                  'fontWeight': 'bold', 'color': 'white',
+                                                  'fontWeight': 'bold', #'color': 'white',
                                                   'font-size': '18px'}),
                             dbc.CardBody([
                                 # Row 1: Filter
@@ -219,7 +219,7 @@ tab1_content = html.Div([
                     dbc.Card([
                         dbc.CardHeader("Your Music Taste", 
                                            style={'backgroundColor': '#68A58C',
-                                                  'fontWeight': 'bold', 'color': 'white',
+                                                  'fontWeight': 'bold', #'color': 'white',
                                                   'font-size': '18px'}),          
                         dbc.CardBody([
                             dash_table.DataTable(
@@ -251,7 +251,7 @@ tab1_content = html.Div([
                     dbc.Card([
                         dbc.CardHeader("Genre Proportion", 
                                            style={'backgroundColor': '#68A58C',
-                                                  'fontWeight': 'bold', 'color': 'white',
+                                                  'fontWeight': 'bold', #'color': 'white',
                                                   'font-size': '18px'}),
                         dbc.CardBody([
 #                             html.Iframe(
@@ -275,7 +275,7 @@ tab1_content = html.Div([
                     dbc.Card([
                         dbc.CardHeader("Music Taste Status", 
                                            style={'backgroundColor': '#68A58C',
-                                                  'fontWeight': 'bold', 'color': 'white',
+                                                  'fontWeight': 'bold', #'color': 'white',
                                                   'font-size': '18px'}),
                         dbc.CardBody([
                             dcc.Graph(id='radar-chart')
@@ -640,7 +640,7 @@ tab3_content = dbc.Container([
                     marks={i: str(i) for i in range(0, 101, 5)},
             )], color="light"),
             dbc.Card([
-                dbc.CardHeader("Step2: Zoom in & Select a Country to View the Top 10 Songs", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),  # Light green background, bold, and centered text
+                dbc.CardHeader("Step2: Zoom in & Select a Country to View a Top 10 Songs List (below)", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),  # Light green background, bold, and centered text
                 dcc.Graph(
                     id='choropleth-map',
                     style={'height': '100%', 'padding': '3px'} # Adjusted height 58vh was good
@@ -650,18 +650,18 @@ tab3_content = dbc.Container([
         
         dbc.Col([
             dbc.Card([
+                dbc.CardHeader("Top 3 Artists in the World based on Popularity Range", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
+                html.Div(id='image-container', style={'height': '33vh', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}) # height was 27vh
+            ], color="light" # style={'margin-top': '16px'} # 'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 
+            ),
+            dbc.Card([
                 dbc.CardHeader("Most Frequently Ranked Artists in the World by Popularity", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 dcc.Graph(
                     id='top-artists-pie-chart',
                     config={'displayModeBar': False}, # Hide the mode bar
                     style={'height': '100%', 'padding': '3px'} # Adjusted height 35vh was good, but chart wouldn't fit
                 ),
-            ], color="light" # , style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px'}
-            ),
-            dbc.Card([
-                dbc.CardHeader("Top 3 Artists in the World based on Popularity Range", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
-                html.Div(id='image-container', style={'height': '33vh', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}) # height was 27vh
-            ], color="light", style={'margin-top': '16px'} # 'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 
+            ], color="light", style={'margin-top': '16px'} # , style={'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 'padding': '3px'}
             )
         ], width=6),
     ]),
@@ -669,6 +669,7 @@ tab3_content = dbc.Container([
     dbc.Row([
         dbc.Col([
             dbc.Card([
+                dbc.CardHeader("Step3: The Top 10 Songs for Every Country that is Selected Will Be Displayed Here", style={'backgroundColor': '#68A58C', 'fontWeight': 'bold', 'textAlign': 'center'}),
                 html.Div(id='selected-country'),
                 html.Div(id='song-list')
             ], color="light", style={'margin-top': '16px'}) # 'backgroundColor': 'light', 'borderRadius': '10px', 'border': '1px solid lightgrey', 
@@ -849,12 +850,12 @@ def update_top_artists_img(selected_range):
     [Input('choropleth-map', 'clickData')]
 )
 def update_selected_country_display(clickData):
-    if clickData:
-        country_code = clickData['points'][0]['location']
-        country_name = map_country_code_to_name(country_code) # Map country code to full country name
-        return html.H3(f"Selected Country: {country_name}")
+    # if clickData:
+    country_code = clickData['points'][0]['location']
+    country_name = map_country_code_to_name(country_code) # Map country code to full country name
+    return html.H3(f"Selected Country: {country_name}")
 
-    return html.H3("Click on a country to see its top 10 songs by popularity.")
+    # return html.H3("Step3: Top 10 Songs List for Each Country Displayed Here")
 
 # Add callback to update song list when a country is clicked or slider value changes
 @app.callback(
